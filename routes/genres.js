@@ -1,55 +1,48 @@
 const Joi = require("joi");
 const express = require("express");
 const router = express.Router();
+const Genre = require("../Database/genre");
 
 router.use(express.json());
 
-const genres = [
-  { id: 1, name: "Action" },
-  { id: 2, name: "Horror" },
-  { id: 3, name: "Romance" },
-];
-
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+  const genres = await Genre.find();
   res.send(genres);
 });
 
-router.get("/:id", (req, res) => {
-  const genre = genres.find((g) => g.id === +req.params.id);
-  if (!genre)
-    return res.send(404).send(`Genre ${req.params.id} does not exist`);
-  res.send(genre);
+router.get("/:id", async (req, res) => {
+  await Genre.findById(req.params.id, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data);
+  });
 });
 
-router.post("/", (req, res) => {
-  const schema = {
-    name: Joi.string().min(3).required(),
-  };
-
-  const { error } = Joi.validate(req.body, schema);
-
-  if (error) return res.status(400).send(`Error: ${error.details[0].message}`);
-
-  const genre = {
-    id: genres.length + 1,
-    name: req.body.name,
-  };
-  genres.push(genre);
-  res.send(genre);
-});
-
-router.put("/:id", (req, res) => {
-  const genre = genres.find((g) => g.id === +req.params.id);
-  if (!genre)
-    return res.send(404).send(`Genre ${req.params.id} does not exist`);
-
+router.post("/", async (req, res) => {
   const schema = {
     name: Joi.string().min(3).required(),
   };
   const { error } = Joi.validate(req.body, schema);
+
   if (error) return res.status(400).send(`Error: ${error.details[0].message}`);
 
-  genre.name = req.body.name;
+  const { name } = req.body;
+  let genre = {};
+  genre.name = name;
+  let genreModel = new Genre(genre);
+  await genreModel.save();
+  //
+  res.send(genreModel);
+});
+
+router.put("/:id", async (req, res) => {
+  const update = { name: req.body.name };
+  const genre = await Genre.findOneAndUpdate(req.params.id, update, {new: true});
+
+  //needs to be updated
+
+
   res.send(genre);
 });
 

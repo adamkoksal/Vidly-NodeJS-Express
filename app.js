@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
+const genres = require("./routes/genres");
+const ConnectDB = require("./Database/connection");
 
-const genres = require('./routes/genres');
+ConnectDB();
+app.use("/api/genres", genres);
 
-
-app.use('/api/genres', genres);
-
-
-app.listen(3000, () => console.log("Running on 3000"));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Running on ${port}...`));
