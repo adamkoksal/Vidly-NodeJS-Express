@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Customer = require("../Database/customer");
-const Joi = require("joi");
+const { Customer, validate } = require("../Database/customer");
 
 router.get("/", async (req, res) => {
   await Customer.find()
@@ -16,7 +15,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { error } = validateInput(req.body);
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(`Error: ${error.details[0].message}`);
 
   await new Customer(req.body)
@@ -36,14 +35,5 @@ router.delete("/:id", async (req, res) => {
     .then((data) => res.send(data))
     .catch((err) => res.status(400).send(err.message));
 });
-
-function validateInput(body) {
-  const schema = {
-    name: Joi.string().required(),
-    isGold: Joi.boolean().required(),
-    phone: Joi.string().required(),
-  };
-  return Joi.validate(body, schema);
-}
 
 module.exports = router;
