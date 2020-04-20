@@ -5,9 +5,13 @@ const URL =
 
 const ConnectDB = async () => {
   await mongoose
-    .connect(URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+    .connect(URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    })
     .then(() => console.log("Connected to DB..."))
-    .catch((err) => console.log("Error connecting to DB"));
+    .catch((err) => console.log("Error connecting to DB..."));
 };
 
-module.exports = ConnectDB; 
+module.exports = ConnectDB;

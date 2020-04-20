@@ -6,61 +6,46 @@ const Genre = require("../Database/genre");
 router.use(express.json());
 
 router.get("/", async (req, res) => {
-  const genres = await Genre.find();
+  const genres = await Genre.find().sort("name");
   res.send(genres);
 });
 
 router.get("/:id", async (req, res) => {
-  await Genre.findById(req.params.id, (err, data) => {
-    if (err) {
-      res.send(err);
-    }
-    res.send(data);
-  });
+  await Genre.findById(req.params.id)
+    .then((data) => res.send(data))
+    .catch((err) => res.status(404).send(err.message));
 });
 
 router.post("/", async (req, res) => {
-  const schema = {
-    name: Joi.string().min(3).required(),
-  };
-  const { error } = Joi.validate(req.body, schema);
-
+  const { error } = validateGenre(req.body);
   if (error) return res.status(400).send(`Error: ${error.details[0].message}`);
 
-  const { name } = req.body;
-  let genre = {};
-  genre.name = name;
-  let genreModel = new Genre(genre);
-  await genreModel.save();
-
-  res.send(genreModel);
+  await new Genre(req.body)
+    .save()
+    .then((data) => res.send(data))
+    .catch((err) => res.send(err.message));
 });
 
 router.put("/:id", async (req, res) => {
-  const schema = {
-    name: Joi.string().min(3).required(),
-  };
-  const { error } = Joi.validate(req.body, schema);
-
+  const { error } = validateGenre(req.body);
   if (error) return res.status(400).send(`Error: ${error.details[0].message}`);
 
-  const update = { name: req.body.name };
-  const genre = await Genre.findByIdAndUpdate(
-    req.params.id,
-    update,
-    { new: true },
-    function (err, model) {
-      if (err) res.send(err.message);
-      else res.send(model);
-    }
-  );
+  await Genre.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then((data) => res.send(data))
+    .catch((err) => res.send(err.message));
 });
 
 router.delete("/:id", async (req, res) => {
-  await Genre.findByIdAndDelete(req.params.id, function (err, model) {
-    if (err) res.send(err.message);
-    else res.send(model);
-  });
+  await Genre.findByIdAndDelete(req.params.id)
+    .then((data) => res.send(data))
+    .catch((err) => res.status(404).send(err.message));
 });
+
+function validateGenre(body) {
+  const schema = {
+    name: Joi.string().min(5).required(),
+  };
+  return Joi.validate(body, schema);
+}
 
 module.exports = router;
