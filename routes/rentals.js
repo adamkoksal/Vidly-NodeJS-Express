@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Rental = require("../Database/rental");
-const {Customer} = require("../Database/customer");
+const { Customer } = require("../Database/customer");
 const Movie = require("../Database/movie");
 const Joi = require("joi");
 
@@ -22,11 +22,13 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const customer = await Customer.findById(req.body.customerId).catch((err) =>
-    res.status(400).send(err.message)
+    console.log(err.message)
   );
+  if (!customer) return res.status(400).send("Customer does not exist");
   const movie = await Movie.findById(req.body.movieId).catch((err) =>
-    res.status(400).send(err.message)
+    console.log(err.message)
   );
+  if (!movie) return res.status(400).send("Movie does not exist");
   if (movie.numberInStock === 0)
     return res.status(400).send("Movie not in stock.");
 
