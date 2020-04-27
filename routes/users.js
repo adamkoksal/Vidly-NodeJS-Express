@@ -3,8 +3,14 @@ const router = express.Router();
 const { User, validate } = require("../Database/user");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const config = require("config");
+const auth = require("../middleware/auth");
+
+router.get("/me", auth, async (req, res) => {
+  await User.findById(req.user._id)
+    .select(["-password","-__v"])
+    .then((data) => res.send(data))
+    .catch((err) => res.status(400).send(err.message));
+});
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
@@ -16,15 +22,14 @@ router.post("/", async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
 
-  user = new User({
+  await new User({
     name: req.body.name.toLowerCase(),
     email: req.body.email.toLowerCase(),
     password: await bcrypt.hash(req.body.password, salt),
-  });
-  await user
+  })
     .save()
     .then((data) => {
-      const token = user.createToken();
+      const token = data.createToken();
       res
         .header("x-auth-token", token)
         .send(_.pick(data, ["_id", "name", "email"]));

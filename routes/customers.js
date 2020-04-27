@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Customer, validate } = require("../Database/customer");
+const auth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   await Customer.find()
@@ -14,7 +15,7 @@ router.get("/:id", async (req, res) => {
     .catch((err) => res.status(400).send(err.message));
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(`Error: ${error.details[0].message}`);
 
@@ -24,13 +25,13 @@ router.post("/", async (req, res) => {
     .catch((err) => res.status(400).send(err.message));
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   await Customer.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then((data) => res.send(data))
     .catch((err) => res.status(400).send(err.message));
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   await Customer.findByIdAndDelete(req.params.id)
     .then((data) => res.send(data))
     .catch((err) => res.status(400).send(err.message));

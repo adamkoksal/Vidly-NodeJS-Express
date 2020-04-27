@@ -4,6 +4,7 @@ const Rental = require("../Database/rental");
 const { Customer } = require("../Database/customer");
 const Movie = require("../Database/movie");
 const Joi = require("joi");
+const auth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   await Rental.find()
@@ -17,7 +18,7 @@ router.get("/:id", async (req, res) => {
     .catch((err) => res.status(400).send(err.message));
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 

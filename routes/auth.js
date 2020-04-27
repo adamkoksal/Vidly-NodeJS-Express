@@ -4,8 +4,6 @@ const { User } = require("../Database/user");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
 
-const config = require("config");
-
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(`Error: ${error.details[0].message}`);
