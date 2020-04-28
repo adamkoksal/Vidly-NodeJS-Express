@@ -1,17 +1,15 @@
 const mongoose = require("mongoose");
+const winston = require("winston");
 
 const URL =
   "mongodb+srv://akoksal:akoksal@mycluster-jptjg.mongodb.net/vidly_project?retryWrites=true&w=majority";
 
-const ConnectDB = async () => {
+module.exports = async function () {
   await mongoose
     .connect(URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
     })
-    .then(() => console.log("Connected to DB..."))
-    .catch((err) => console.log("Error connecting to DB..."));
+    .then(() => winston.info("Connected to DB..."));
 };
-
-module.exports = ConnectDB;

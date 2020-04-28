@@ -1,28 +1,26 @@
+require("express-async-errors");
+const winston = require("winston");
 const express = require("express");
-const app = express();
-const genres = require("./routes/genres");
-const customers = require("./routes/customers");
-const movies = require("./routes/movies");
-const rentals = require("./routes/rentals");
-const users = require("./routes/users");
-const auth = require("./routes/auth");
 const config = require("config");
-const ConnectDB = require("./Database/connection");
+const app = express();
 
-app.use(express.json());
+require("./startup/routes")(app);
+require("./startup/db")();
+
+winston.exceptions.handle(
+  new winston.transports.File({ filename: "logfile.log" })
+);
+
+process.on("unhandledRejection", (ex) => {
+  throw ex;
+});
+
+winston.add(new winston.transports.File({ filename: "logfile.log" }));
 
 if (!config.get("jwtPrivateKey")) {
   console.error("FATAL ERROR: jwtPrivateKey is not defined.");
   process.exit(1);
 }
-
-ConnectDB();
-app.use("/api/genres", genres);
-app.use("/api/customers", customers);
-app.use("/api/movies", movies);
-app.use("/api/rentals", rentals);
-app.use("/api/users", users);
-app.use("/api/auth", auth);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Running on ${port}...`));

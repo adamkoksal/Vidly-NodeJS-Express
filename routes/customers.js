@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Customer, validate } = require("../Database/customer");
+const { Customer, validate } = require("../model/customer");
 const auth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {

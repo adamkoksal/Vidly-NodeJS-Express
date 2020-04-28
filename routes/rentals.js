@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Rental = require("../Database/rental");
-const { Customer } = require("../Database/customer");
-const Movie = require("../Database/movie");
+const Rental = require("../model/rental");
+const { Customer } = require("../model/customer");
+const Movie = require("../model/movie");
 const Joi = require("joi");
 const auth = require("../middleware/auth");
 

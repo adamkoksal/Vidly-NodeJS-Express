@@ -3,6 +3,8 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 
+mongoose.set('useCreateIndex', true);
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,

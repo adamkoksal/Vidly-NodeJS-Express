@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { User, validate } = require("../Database/user");
+const { User, validate } = require("../model/user");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");

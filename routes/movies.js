@@ -1,5 +1,5 @@
-const Movie = require("../Database/movie");
-const { Genre } = require("../Database/genre");
+const Movie = require("../model/movie");
+const { Genre } = require("../model/genre");
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
