@@ -11,5 +11,5 @@ module.exports = async function () {
       useUnifiedTopology: true,
       useFindAndModify: false,
     })
-    .then(() => winston.info("Connected to DB..."));
+    .then(() => console.log("Connected to DB..."));
 };
