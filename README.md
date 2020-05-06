@@ -1,5 +1,7 @@
 # Vidly-NodeJS-Express-MongoDB
 
+• https://vidly-nodejs.herokuapp.com/
+
 • Vidly is a Web API designed for a movie rental company
 
 • Has authorization and authentication features to protect routes.
