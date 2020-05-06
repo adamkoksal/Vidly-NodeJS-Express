@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mongoose": "^5.9.9",
+    "path": "^0.12.7",
     "winston": "^3.2.1"
   }
 }
